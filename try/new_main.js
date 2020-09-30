@@ -7,58 +7,36 @@ class Popup {
     constructor(inputBTN, section) {
         this.inputBTN = inputBTN;
         this.section = section;
+        this.addedClass = '';
     }
     creare(createdElements, inneredInformation, classEleements, NewCreatedElements) {
         let i = 0;
-        // let NewCreatedElements = [];
-        let nestedelement = [];
-        let link = 0, link_to_add = 0;
         let laterBlock;
-        for (let [index,block] of createdElements.entries()) {
+        for (let [index, block] of createdElements.entries()) {
             laterBlock = block;
-            if (block == '[') {
-                link++;
-                // link_to_add = i;
-                if (link_to_add == 0) {
-                    this.link_to_add = index;
-                    // console.log(index);
-                }
+            if (block == '*') {
+
+                this.addedClass = 'added';
+               
                 continue;
 
             }
-            if (link == 1) {
-                // console.log(link);
-                // nestedelement = document.createElement(`${block}`);
-                // nestedelement.innerHTML = '1';
-                // laterBlock.append(nestedelement);
-                if (block == ']') {
-                    link--;
-                    continue;
-                }
-                nestedelement.push(block);
-                console.log(nestedelement);
-                
+
+            let blockHTML = document.createElement(`${block}`);
+
+            blockHTML.innerHTML = (inneredInformation[i] != undefined) ? `${inneredInformation[i]}` : '';
+            blockHTML.classList.add(`${ classEleements[i]}`);
+            if (this.addedClass != '') {
+                blockHTML.classList.add(`${ this.addedClass}`);
             }
-            if (link == 0) {
-                let blockHTML = document.createElement(`${block}`);
-                
-                blockHTML.innerHTML = (inneredInformation[i] != undefined) ? `${inneredInformation[i]}` : '';
-                blockHTML.classList.add(`${ classEleements[i]}`);
-                NewCreatedElements.push(blockHTML);
-                this.newElement = NewCreatedElements;
-                i++;
-                
-            }
-           
+            NewCreatedElements.push(blockHTML);
+            this.newElement = NewCreatedElements;
+            i++;
+            this.addedClass = '';
+
+
         }
-        // console.log(this.newElement[1]);
-        for (let [index,block] of createdElements.entries()) {
-            if (index == this.link_to_add) {
-                // console.log(index);
-                let blockHTML = document.createElement(`${nestedelement[index]}`);
-                this.newElement[this.link_to_add].append(blockHTML);
-            }
-        }
+
     }
 
 
@@ -72,12 +50,58 @@ class Popup {
         this.creare(createdElements, inneredInformation, classEleements, NewCreatedElements);
         // создание шапки
         let popupHeader = document.createElement('div');
-        popupHeader.classList.add('popup-header');
+        popupHeader.classList.add(`${this.inputBTN.dataset.headerWrapper}`);
         for (let blok of NewCreatedElements) {
             popupHeader.append(blok);
         }
+        let indexAdded = 0;
+        let x = 0;
+        for (let block of NewCreatedElements) {
+            
+            
+            let addedEleements = this.inputBTN.dataset.headerAdded.split('*');
+            // addedEleements  = addedEleements.reverse();
+            if (block.classList.contains('added')) {
+                // addedEleements  = addedEleements.reverse();
+                for (let added of addedEleements) {
+                   
+                    if (x != 0) {
+                        x=0;
+                        continue ;
+                    } else {
+                        // added=added.reverse();
+                        added = added.split(' ');
+                        
+                        
+                        for (let b of added) {
+                                if (b != "") {
+                                    let addedElement = document.createElement(`${b}`);
+                                    block.append(addedElement);
+                                }
+                           
+                        }
+                        x++;
+                        
+                        if (added != "") {
+                            continue;
+                        }
+                        
+                    }
+                    
+                }
+                
+                x++;
+                if (addedEleements == "*") {
+                    break;
+                }
+
+            }
+
+        }
+
+
         this.Header = popupHeader;
-        // console.log(this.ElementsHeader);
+        
     }
     ElementsBody() {
         let i = 0;
@@ -85,17 +109,17 @@ class Popup {
         let createdElements = this.inputBTN.dataset.bodyTag.split(' ');
         let inneredInformation = this.inputBTN.dataset.bodyInserted.split(' ');
         let classEleements = this.inputBTN.dataset.bodyClass.split(' ');
-        // console.log(inneredInformation)
+       
 
         this.creare(createdElements, inneredInformation, classEleements, NewCreatedElements);
         // создание тела попапа
         let popupBody = document.createElement('div');
-        popupBody.classList.add('popup-body');
+        popupBody.classList.add(`${this.inputBTN.dataset.bodyWrapper}`);
         for (let blok of NewCreatedElements) {
             popupBody.append(blok);
         }
         this.Body = popupBody;
-        // console.log(this.ElementsHeader);
+        
     }
     // 
     ElementsFooter() {
@@ -108,7 +132,7 @@ class Popup {
         this.creare(createdElements, inneredInformation, classEleements, NewCreatedElements);
         // создание тела попапа
         let popupFooter = document.createElement('div');
-        popupFooter.classList.add('popup-footer');
+        popupFooter.classList.add(`${this.inputBTN.dataset.footerWrapper}`);
         for (let blok of NewCreatedElements) {
             popupFooter.append(blok);
         }
@@ -119,16 +143,14 @@ class Popup {
         this.ElementsHeader();
         this.ElementsBody();
         this.ElementsFooter();
-        // console.log(this.Footer);
         let popupContent = document.createElement('div');
-        popupContent.classList.add('popup-content');
+        popupContent.classList.add(`${this.inputBTN.dataset.contentWrapper}`);
         popupContent.append(this.Header);
         popupContent.append(this.Body);
         popupContent.append(this.Footer);
         let popup = document.createElement('div');
-        popup.classList.add('popup');
+        popup.classList.add(`${this.inputBTN.dataset.popupWrapper}`);
         popup.append(popupContent);
-        //  console.log(popup);  
         section.append(popup);
     }
 }
