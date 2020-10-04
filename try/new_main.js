@@ -17,18 +17,19 @@ class Popup {
             if (block == '*') {
 
                 this.addedClass = 'added';
-               
+
                 continue;
 
             }
-
             let blockHTML = document.createElement(`${block}`);
 
             blockHTML.innerHTML = (inneredInformation[i] != undefined) ? `${inneredInformation[i]}` : '';
             blockHTML.classList.add(`${ classEleements[i]}`);
+
             if (this.addedClass != '') {
                 blockHTML.classList.add(`${ this.addedClass}`);
             }
+
             NewCreatedElements.push(blockHTML);
             this.newElement = NewCreatedElements;
             i++;
@@ -54,54 +55,60 @@ class Popup {
         for (let blok of NewCreatedElements) {
             popupHeader.append(blok);
         }
-        let indexAdded = 0;
+        let indexAdded = 1;
+        let indexAddedDop = 1;
         let x = 0;
+        NewCreatedElements = NewCreatedElements.reverse();
         for (let block of NewCreatedElements) {
-            
-            
             let addedEleements = this.inputBTN.dataset.headerAdded.split('*');
-            // addedEleements  = addedEleements.reverse();
+            let addedinformation = this.inputBTN.dataset.headerAddedinserted.split('*');
+            let arr = [];
+            let arr1 = [];
+            let indexArr = 0;
+            for (let inf of addedinformation) {
+                arr.push(inf.split(' '))
+                indexArr++;
+            }
+
+            // console.log(indexArr);
             if (block.classList.contains('added')) {
-                // addedEleements  = addedEleements.reverse();
-                for (let added of addedEleements) {
-                   
+                for (let [j, added] of addedEleements.entries()) {
                     if (x != 0) {
-                        x=0;
-                        continue ;
+                        x = 0;
+                        indexAddedDop = indexAdded + j;
+                        continue;
                     } else {
-                        // added=added.reverse();
                         added = added.split(' ');
-                        
-                        
-                        for (let b of added) {
-                                if (b != "") {
-                                    let addedElement = document.createElement(`${b}`);
-                                    block.append(addedElement);
-                                }
-                           
+                        for (let [i, b] of added.entries()) {
+                            if (b != "") {
+                                let addedElement = document.createElement(`${b}`);
+                                arr1.push(...arr[(i - 1), j-1]);
+                                addedElement.innerHTML= arr1[j,i];
+                                block.append(addedElement);
+                                
+                            }
+                            indexAdded = i;
                         }
                         x++;
-                        
                         if (added != "") {
+                            indexAddedDop = indexAdded + j;
                             continue;
                         }
-                        
+
                     }
-                    
+                    // indexAddedDop = indexAdded+j;
                 }
-                
                 x++;
                 if (addedEleements == "*") {
+                    indexAddedDop = indexAdded;
                     break;
                 }
 
             }
 
         }
-
-
         this.Header = popupHeader;
-        
+        console.log(this.Header);
     }
     ElementsBody() {
         let i = 0;
@@ -109,7 +116,7 @@ class Popup {
         let createdElements = this.inputBTN.dataset.bodyTag.split(' ');
         let inneredInformation = this.inputBTN.dataset.bodyInserted.split(' ');
         let classEleements = this.inputBTN.dataset.bodyClass.split(' ');
-       
+
 
         this.creare(createdElements, inneredInformation, classEleements, NewCreatedElements);
         // создание тела попапа
@@ -119,7 +126,7 @@ class Popup {
             popupBody.append(blok);
         }
         this.Body = popupBody;
-        
+
     }
     // 
     ElementsFooter() {
