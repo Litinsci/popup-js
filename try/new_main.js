@@ -83,7 +83,7 @@ class Popup {
                             if (b != "") {
                                 let addedElement = document.createElement(`${b}`);
                                 arr1.push(...arr[(i - 1), j-1]);
-                                addedElement.innerHTML= arr1[j,i];
+                                addedElement.innerHTML= arr1[j-1,i];
                                 block.append(addedElement);
                                 
                             }
